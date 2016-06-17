@@ -1,0 +1,22 @@
+Package: MYTSBE
+Type: Package
+Title: Multi-Year Time Stratified Bayesian Estimator
+Version: 0.1.0
+Date: 04-01-2016
+Author: Bryce Oldemeyer <Bryce.Oldemeyer@gmail.com>
+Maintainer: Bryce Oldemeyer <Bryce.Oldemeyer@gmail.com>
+Description: This package calculates abundance estimates from capture-mark-recapture data using a multi-year hierarchical model.The model draws on the assumption that the species of interest exhibit annually recurring behavior and uses this to obtain more accurate and precise estimates, particularly with sparse and missing data. Designed for salmonid migration but applicable to any species exhibiting recurring behavior.
+License: GPL-2
+LazyData: TRUE
+Imports:
+  plyr(>= 1.8.3),
+  lubridate(>= 1.5.6),
+  R2jags(>= 0.5-7),
+  coda(>= 0.18-1),
+  lattice(>= 0.20-33),
+  superdiag(>= 1.1),
+  mcmcplots(>= 0.4.2),
+  ggmcmc(>= 0.8),
+  data.table(>= 1.9.6),
+  useful(>= 1.2.0)
+RoxygenNote: 5.0.1
