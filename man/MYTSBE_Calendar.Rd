@@ -6,7 +6,7 @@
 \usage{
 MYTSBE_Calendar(data, effort.cor = FALSE, sel.years = currentyear,
   strata.op.min = 1, smolt.juv.date = "06-01", species = "",
-  trap.name = "", den.plot = TRUE, trace.plot = TRUE,
+  trap.name = "", den.plot = TRUE, trace.plot = FALSE,
   strata.length = s.length, burnin = 1e+05, chains = 3,
   iterations = 4e+05, thin = 100, boot = 5000, rm.bad.GR = FALSE,
   model.params = c("p", "U", "etaP1", "etaU1", "sigmaU", "sigmaP"))

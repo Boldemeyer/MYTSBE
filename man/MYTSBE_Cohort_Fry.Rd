@@ -2,12 +2,12 @@
 % Please edit documentation in R/MYTSBE_Cohort_Fry.R
 \name{MYTSBE_Cohort_Fry}
 \alias{MYTSBE_Cohort_Fry}
-\title{Multi-year time stratified Bayesian estimator (cohort summary)}
+\title{Multi-year time stratified Bayesian estimator (cohort summary with Bismark Brown stained fry)}
 \usage{
 MYTSBE_Cohort_Fry(data, effort.cor = FALSE, sel.years = currentyear,
   strata.op.min = 1, smolt.parr.date = "07-01",
   parr.presmolt.date = "09-01", species = "", trap.name = "",
-  den.plot = TRUE, trace.plot = TRUE, strata.length = s.length,
+  den.plot = FALSE, trace.plot = FALSE, strata.length = s.length,
   burnin = 1e+05, chains = 3, iterations = 4e+05, thin = 100,
   boot = 5000, rm.bad.GR = FALSE, model.params = c("p", "U", "etaP1",
   "etaU1", "sigmaU", "sigmaP"))

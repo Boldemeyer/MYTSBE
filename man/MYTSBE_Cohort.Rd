@@ -7,7 +7,7 @@
 MYTSBE_Cohort(data, effort.cor = FALSE, sel.years = currentyear,
   strata.op.min = 1, smolt.parr.date = "07-01",
   parr.presmolt.date = "09-01", species = "", trap.name = "",
-  den.plot = TRUE, trace.plot = TRUE, strata.length = s.length,
+  den.plot = TRUE, trace.plot = FALSE, strata.length = s.length,
   burnin = 1e+05, chains = 3, iterations = 4e+05, thin = 100,
   boot = 5000, rm.bad.GR = FALSE, model.params = c("p", "U", "etaP1",
   "etaU1", "sigmaU", "sigmaP"))
@@ -55,6 +55,6 @@ structures allows for annually recurring species characteristics to be incorpora
 
 Summary output is by cohort year.
 
-Peer reviewed publication can be found at ...
+Peer reviewed publication can be found at ... yadda yadda
 }
 
