@@ -2,7 +2,7 @@
 % Please edit documentation in R/MYTSBE_Cohort_Fry.R
 \name{MYTSBE_Cohort_Fry}
 \alias{MYTSBE_Cohort_Fry}
-\title{Multi-year time stratified Bayesian estimator (cohort summary with Bismark Brown stained fry)}
+\title{Multi-year time stratified Bayesian estimator (cohort summary with marked fry)}
 \usage{
 MYTSBE_Cohort_Fry(data, effort.cor = FALSE, sel.years = currentyear,
   strata.op.min = 1, smolt.parr.date = "07-01",
@@ -41,7 +41,7 @@ MYTSBE_Cohort_Fry(data, effort.cor = FALSE, sel.years = currentyear,
 
 \item{iterations}{number of MCMC iterations per chain}
 
-\item{thin}{thin rate}
+\item{thin}{thin rate for MCMC chains}
 
 \item{boot}{number of boot strap iterations to calculate yearly and life stage abundance estimates}
 

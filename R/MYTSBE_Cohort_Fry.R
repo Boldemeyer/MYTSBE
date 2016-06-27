@@ -12,7 +12,7 @@
 #' @param burnin number of initial MCMC chain iterations to be discarded
 #' @param chains number of MCMC chains (>1)
 #' @param iterations number of MCMC iterations per chain
-#' @param thin thin rate
+#' @param thin thin rate for MCMC chains
 #' @param sel.years selected year(s) to compute abundance estimates
 #' @param boot number of boot strap iterations to calculate yearly and life stage abundance estimates
 #' @param species character string used for titles and descriptions of reports
@@ -713,8 +713,8 @@ MYTSBE_Cohort_Fry <- function(data,
       smolt.usep.not.used<-sort(unique(smolt.usep.not.used$strata)) + (min(data$strata)-1)
       smolt.usep.not.used<-paste(smolt.usep.not.used, collapse=", ")
       fry.usep.not.used<-subset(fry1, (fry1$Parameter %in% nc.gd))
-      fry.usep.not.used<-sort(unique(fry1.usep.not.used$strata)) + (min(data$strata)-1)
-      fry.usep.not.used<-paste(fry1.usep.not.used, collapse=", ")
+      fry.usep.not.used<-sort(unique(fry.usep.not.used$strata)) + (min(data$strata)-1)
+      fry.usep.not.used<-paste(fry.usep.not.used, collapse=", ")
 
     }  else {
       parr.usep.not.used <- "none"

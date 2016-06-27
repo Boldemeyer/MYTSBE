@@ -41,7 +41,7 @@ MYTSBE_Cohort(data, effort.cor = FALSE, sel.years = currentyear,
 
 \item{iterations}{number of MCMC iterations per chain}
 
-\item{thin}{thin rate}
+\item{thin}{thin rate for MCMC chains}
 
 \item{boot}{number of boot strap iterations to calculate yearly and life stage abundance estimates}
 

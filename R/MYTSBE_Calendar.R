@@ -12,7 +12,7 @@
 #' @param burnin number of initial MCMC chain iterations to be discarded
 #' @param chains number of MCMC chains (>1)
 #' @param iterations number of MCMC iterations per chain
-#' @param thin thin rate
+#' @param thin thin rate for MCMC chains
 #' @param sel.years selected year(s) to compute abundance estimates
 #' @param boot number of boot strap iterations to calculate yearly and life stage abundance estimates
 #' @param species character string used for titles and descriptions of reports
@@ -117,7 +117,7 @@ MYTSBE_Calendar <- function(data,
 
   model.fit <- jags(data = model.data, inits = NULL,
                     parameters.to.save = model.params, n.chains = chains, n.iter = iterations,
-                    n.burnin = burnin, n.thin = thin, model.file = model)
+                    n.burnin = burnin, model.file = model)
 
   #######################################################################################################################
 
@@ -162,7 +162,6 @@ MYTSBE_Calendar <- function(data,
                     "Number of chains =", chains,"\n",
                     "Number of iterations per chain =", iterations, "\n",
                     "Burn in =", burnin,"\n",
-                    "Thin rate =", thin, "\n",
                     "\n",
                     "********** The Gelman-Rubin diagnostic: **********","\n","\n",
                     "\n",
@@ -221,7 +220,6 @@ MYTSBE_Calendar <- function(data,
                     "Number of chains =", chains,"\n",
                     "Number of iterations per chain =", iterations, "\n",
                     "Burn in =", burnin,"\n",
-                    "Thin rate =", thin, "\n",
                     "* Strata with <", strata.op.min, "year(s) of operation  * ", "\n",
                     paste(x.strata, collapse=', ' ),
                     "\n",

@@ -38,12 +38,12 @@ Format_Chinook <- function(JTRAP_data,
   JTRAP_data$jday <- yday(JTRAP_data$PT2Date)
   JTRAP_data$Smolt_pot <- yday(paste(JTRAP_data$Year,"-",smolt.date, sep =""))
 
-  #movement parameter from PTAGIS query
+  # movement parameter from PTAGIS query
   PTAG_data$Days.Between <- as.numeric(as.Date(PTAG_data$Recap.Date.MMDDYYYY, format = "%m/%d/%Y") - as.Date(PTAG_data$Mark.Date.MMDDYYYY,format = "%m/%d/%Y")) #find days between mark and recapture
   PTAG_data <- PTAG_data[PTAG_data$Days.Between > 0 ,] # clean data with negative days between mark/recapture
   PTAG_data <- PTAG_data[PTAG_data$Days.Between <= 10 ,] # clean data by removing recapture days over 10
   PTAG_data <- PTAG_data[order(PTAG_data$Tag.Code, PTAG_data$Days.Between, decreasing = FALSE),] # order by Tag.Code & Days.Between so the shortest "Days.Between" values are retained for duplicates. These fish are presumed to be recaptured fish released upstream and caught again recaptured
-  PTAG_data <- PTAG_data[!duplicated(PTAG_data$Tag.Code),] #remove duplicate PTAG codes
+  PTAG_data <- PTAG_data[!duplicated(PTAG_data$Tag.Code),] # remove duplicate PTAG codes
 
   Mig_days <- count(PTAG_data, "Days.Between") #count total # of fish
 
@@ -84,7 +84,6 @@ Format_Chinook <- function(JTRAP_data,
   trap_merge <- merge(trap_merge, trap_u_total, by="PT2Date" , all=TRUE)
   colnames(trap_merge)[4]<- "u"
 
-
   names(trap_merge) <- c("date","m","nraw","u")
   trap_merge$date <- as.Date(trap_merge$date, format = "%m/%d/%Y")
 
@@ -102,15 +101,6 @@ Format_Chinook <- function(JTRAP_data,
 
   # merge with calendar with trap data
   trap_date_filled = merge(trap_merge, dates, by="date", all=TRUE)
-
-  #add a column "days" and fill with "1"s
-  trap_date_filled["days"] <- 1
-
-  #create an "effort" column that is filled with 1 if a fish was captured or a 0 if a fish wasn't captured
-  trap_date_filled$effort <- ifelse((trap_date_filled$m > 0) | (trap_date_filled$nraw > 0) | (trap_date_filled$u > 0) , 1, 0)
-
-  #if the trap effort is "NA", change it to "0"
-  trap_date_filled$effort[is.na (trap_date_filled$effort)] = 0
 
   ###############################################
   #    Adding Julian Date & Year Variables      #
@@ -171,7 +161,6 @@ Format_Chinook <- function(JTRAP_data,
   trap_merge_yoy <- merge(trap_merge_yoy, trap_yoyu_total, by="PT2Date" , all=TRUE)
   colnames(trap_merge_yoy)[4]<- "yoyu"
 
-
   names(trap_merge_yoy) <- c("date","yoym","yoynraw","yoyu")
   trap_merge_yoy$date <- as.Date(trap_merge_yoy$date, format = "%m/%d/%Y")
 
@@ -183,6 +172,14 @@ Format_Chinook <- function(JTRAP_data,
 
   trap_full <- merge(trap_full, trap_date_yoy_filled, by="date", all=TRUE)
 
+  #add a column "days" and fill with "1"s
+  trap_full["days"] <- 1
+
+  #create an "effort" column that is filled with 1 if a fish was captured or a 0 if a fish wasn't captured
+  trap_full$effort <- ifelse((trap_full$m > 0) | (trap_full$nraw > 0) | (trap_full$u > 0) | (trap_full$yoym > 0) | (trap_full$yoynraw > 0) | (trap_full$yoyu > 0) , 1, 0)
+
+  #if the trap effort is "NA", change it to "0"
+  trap_full$effort[is.na (trap_full$effort)] = 0
 
   #########################################
   #              Stratafying              #
