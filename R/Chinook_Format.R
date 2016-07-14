@@ -36,7 +36,15 @@ Format_Chinook <- function(JTRAP_data,
   JTRAP_data$PT2Date <-as.Date(JTRAP_data$PT2Date, format = "%m/%d/%Y")
   JTRAP_data$Year <-as.numeric(format(JTRAP_data$PT2Date, format = "%Y"))
   JTRAP_data$jday <- yday(JTRAP_data$PT2Date)
-  JTRAP_data$Smolt_pot <- yday(paste(JTRAP_data$Year,"-",smolt.date, sep =""))
+  JTRAP_data$Smolt_pot <- yday(as.Date(paste(JTRAP_data$Year,"-",smolt.date, sep ="")))
+  JTRAP_data$BroodYr <- as.numeric(JTRAP_data$BroodYr)
+  JTRAP_data$NFish <- as.numeric(JTRAP_data$NFish)
+
+
+  day.effort <- count(JTRAP_data, "PT2Date")
+  day.effort$freq <- 1
+  colnames(day.effort)<- c("date", "effort")
+
 
   # movement parameter from PTAGIS query
   PTAG_data$Days.Between <- as.numeric(as.Date(PTAG_data$Recap.Date.MMDDYYYY, format = "%m/%d/%Y") - as.Date(PTAG_data$Mark.Date.MMDDYYYY,format = "%m/%d/%Y")) #find days between mark and recapture
@@ -176,7 +184,7 @@ Format_Chinook <- function(JTRAP_data,
   trap_full["days"] <- 1
 
   #create an "effort" column that is filled with 1 if a fish was captured or a 0 if a fish wasn't captured
-  trap_full$effort <- ifelse((trap_full$m > 0) | (trap_full$nraw > 0) | (trap_full$u > 0) | (trap_full$yoym > 0) | (trap_full$yoynraw > 0) | (trap_full$yoyu > 0) , 1, 0)
+  trap_full <- merge(trap_full, day.effort, by="date", all=TRUE)
 
   #if the trap effort is "NA", change it to "0"
   trap_full$effort[is.na (trap_full$effort)] = 0
@@ -205,13 +213,13 @@ Format_Chinook <- function(JTRAP_data,
   #jweek
   weeks=count(trap_week, "strata", "effort")
   trap_season=weeks[weeks$freq > 0 ,]
-  trap_start=as.numeric(min(trap_season$strata))
-  trap_finish=as.numeric(max(trap_season$strata))
+  trap_start=as.numeric(min(trap_season$strata, na.rm=TRUE))
+  trap_finish=as.numeric(max(trap_season$strata, na.rm=TRUE))
 
   #Find the first year the trap was in operation
   years=count(trap_week, "year", "effort")
   trap_year=years[years$freq > 0 ,]
-  trap_start_year=as.numeric(min(trap_year$year))
+  trap_start_year=as.numeric(min(trap_year$year, na.rm=TRUE))
 
   #Chop trap data to only the 1st year of operation, first ordinal week, and last ordinal week
   trap_complete=trap_week[trap_week$strata >= trap_start , ]
