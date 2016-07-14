@@ -45,6 +45,7 @@ Format_Steelhead <- function(JTRAP_data,
   day.effort <- count(JTRAP_data, "PT2Date")
   day.effort$freq <- 1
   colnames(day.effort)<- c("date", "effort")
+  JTRAP_data$FLength <-as.numeric(JTRAP_data$FLength)
 
   #movement parameter from PTAGIS query
   PTAG_data$Days.Between <- as.numeric(as.Date(PTAG_data$Recap.Date.MMDDYYYY, format = "%m/%d/%Y") - as.Date(PTAG_data$Mark.Date.MMDDYYYY,format = "%m/%d/%Y")) #find days between mark and recapture
