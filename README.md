@@ -1,7 +1,7 @@
 # MYTSBE
 Multi Year Time Stratified Bayesian Estimator
 
-`MYTSBE` is an R package for estimating juvenile salmonid abundances using capture-mark-recapture data collected at rotary screw traps. `MYTSBE` contains several functions for formatting juvenile salmonid data into the appropriate capture-mark-recapture format needed for the `MYTSBE` model (`Chinook_Format()` and `Steelhead_Format()`). The package also contains three functions that run the same hierarchical Bayesian model but produce different life-stage and cohort summaries dependent on the species (`MYTSBE_Cohort()`, `MYTSBE_Cohort_Fry()`, and `MYTSBE_Calendar()`). 
+`MYTSBE` is an R package for estimating juvenile salmonid abundances using capture-mark-recapture data collected at rotary screw traps. `MYTSBE` contains two functions for formatting juvenile salmonid data (`Chinook_Format()` and `Steelhead_Format()`) into the appropriate capture-mark-recapture format needed for the `MYTSBE` model. The package also contains three functions that run the same hierarchical Bayesian model but produce different life-stage and cohort summaries dependent on the species (`MYTSBE_Cohort()`, `MYTSBE_Cohort_Fry()`, and `MYTSBE_Calendar()`). 
 
 
 ## Getting Started
