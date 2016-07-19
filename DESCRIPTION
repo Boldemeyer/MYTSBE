@@ -8,6 +8,7 @@ Maintainer: Bryce Oldemeyer <Bryce.Oldemeyer@gmail.com>
 Description: This package calculates abundance estimates from capture-mark-recapture data using a multi-year hierarchical model.The model draws on the assumption that the species of interest exhibit annually recurring behavior and uses this to obtain more accurate and precise estimates, particularly with sparse and missing data. Designed for salmonid migration but applicable to any species exhibiting recurring behavior.
 License: GPL-2
 LazyData: TRUE
+Depends: R (>= 2.10)
 Imports:
   plyr(>= 1.8.3),
   lubridate(>= 1.5.6),
