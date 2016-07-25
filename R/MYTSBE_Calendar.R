@@ -21,7 +21,6 @@
 #' @param effort.cor expands the number of unmarked fish captured by a sampling effort
 #' @param strata.length number of days in strata
 #' @param smolt.juv.date "MM-DD" date to partition smolt life stage
-#' @param rm.bad.GR remove U posterior distributions for strata with Gelman-Rubins test statistic >1.1 from yearly summary
 #' @param strata.op.min minimum number of years data need to have been collected in a stratum to be included in summary
 #' @param den.plot return density plots of MCMC chains
 #' @param trace.plot return trace plots of MCMC chains
@@ -53,7 +52,6 @@ MYTSBE_Calendar <- function(data,
                          iterations = 400000,
                          thin = 100,
                          boot = 5000,
-                         rm.bad.GR = FALSE,
                          model.params = c("p", "U", "etaP1", "etaU1", "sigmaU", "sigmaP")) {
 
   currentyear <- max(data$year)-2
@@ -252,10 +250,6 @@ MYTSBE_Calendar <- function(data,
 
     juv<-subset(juv, !(juv$strata %in% excl.strata$strata)) # exclude strata under the strata.op.min threshold
 
-    if(rm.bad.GR == TRUE){
-      juv<-subset(juv, !(juv$Parameter %in% nc.gd))
-    }
-
     juvdt<-as.data.table(juv)
 
     juvUdist = numeric(boot); # set aside an empty vector for bootstrap disribution of the mean
@@ -265,6 +259,8 @@ MYTSBE_Calendar <- function(data,
 
     juvUdist<-as.data.frame(juvUdist) #change output to dataframe
     juvUdist$juvUdist<-as.numeric(juvUdist$juvUdist) #change output to numeric
+
+    write.table(juvUdist, file = paste(selectyr,"Juvenile U distribution.txt"), sep="\t")
 
     #Get descriptive statistics mode, mean, sd, niaveSE or U bootstrap distribution
     juvUsum<-adply(juvUdist, 2, summarise,
@@ -283,14 +279,9 @@ MYTSBE_Calendar <- function(data,
 
     ################## SMOLT ##########################
 
-
     smolt<- subset(usep, strata <= smolt.strata)
 
     smolt<-subset(smolt, !(smolt$strata %in% excl.strata$strata)) # exclude strata under the strata.op.min threshold
-
-    if(rm.bad.GR == TRUE){
-      smolt<-subset(smolt, !(smolt$Parameter %in% nc.gd))
-    }
 
     smoltdt<-as.data.table(smolt)
 
@@ -301,6 +292,8 @@ MYTSBE_Calendar <- function(data,
 
     smoltUdist<-as.data.frame(smoltUdist) #change output to dataframe
     smoltUdist$smoltUdist<-as.numeric(smoltUdist$smoltUdist) #change output to numeric
+
+    write.table(smoltUdist, file = paste(selectyr,"Smolt U distribution.txt"), sep="\t")
 
     #Get descriptive statistics mode, mean, sd, niaveSE or U bootstrap distribution
     smoltUsum<-adply(smoltUdist, 2, summarise,
@@ -321,14 +314,13 @@ MYTSBE_Calendar <- function(data,
     usepdt<-as.data.table(usep) # turn usep into a datable for bootstrap
 
     usepdt<-subset(usepdt, !(usepdt$strata %in% excl.strata$strata)) # exclude strata under the strata.op.min threshold
-    if(rm.bad.GR == TRUE){
-      usepdt<-subset(usepdt, !(usepdt$Parameter %in% nc.gd))
-    }
 
     totUdist = numeric(boot); # set aside an empty vector for bootstrap disribution of the mean
     for (i in 1:boot)
     {totUdist[i] <- sum(usepdt[, value[sample.int(.N, 1, TRUE)], by = strata]) - sum(unique(usepdt$strata))
     }
+
+    write.table(totUdist, file = paste(selectyr,"Total U distribution.txt"), sep="\t")
 
     #Get summary statistics for U bootstrapped distribution
     totUdist<-as.data.frame(totUdist) #change output to dataframe
@@ -361,20 +353,6 @@ MYTSBE_Calendar <- function(data,
     juv1<- subset(usep, strata >= (smolt.strata+1))
     smolt1<- subset(usep, strata <= smolt.strata)
 
-
-    # bind usep.s and usep.p to find what strata were excluded
-    if(rm.bad.GR == TRUE){
-      juv.usep.not.used<-subset(juv1, (juv1$Parameter %in% nc.gd))
-      juv.usep.not.used<-sort(unique(juv.usep.not.used$strata)) + (min(data$strata)-1)
-      juv.usep.not.used<-paste(juv.usep.not.used, collapse= ", ")
-      smolt.usep.not.used<-subset(smolt1, (smolt1$Parameter %in% nc.gd))
-      smolt.usep.not.used<-sort(unique(smolt.usep.not.used$strata)) + (min(data$strata)-1)
-      smolt.usep.not.used<-paste(smolt.usep.not.used, collapse=", ")
-    }  else {
-      juv.usep.not.used <- "none"
-      smolt.usep.not.used <- "none"
-    }
-
     #read out files
     sink(paste(selectyr, species, trap.name, "Calendar Results.txt"), append=FALSE, split=FALSE)
     writeLines(paste( Sys.Date(),"\n",
@@ -385,16 +363,6 @@ MYTSBE_Calendar <- function(data,
                       "\n",
                       "Strata EXCLUDED from results due to <", strata.op.min, "year(s) of operation ","\n",
                       paste(x.strata, collapse=', '), "\n",
-                      "\n",
-                      "Strata EXCLUDED from results due to GR diagnostics >1.1  ", "\n",
-
-                      "SMOLT (strata <= ", smolt.strata+(min(data$strata)-1) ,");",
-                      smolt.usep.not.used,
-                      "\n",
-                      "JUVENILE (strata >", smolt.strata+1+(min(data$strata)-1),");",
-                      juv.usep.not.used,
-                      "\n",
-
                       "\n"
     )
     )

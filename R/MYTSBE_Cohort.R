@@ -22,7 +22,6 @@
 #' @param strata.length number of days in strata
 #' @param smolt.parr.date "MM-DD" date to partition smolt life stage
 #' @param parr.presmolt.date "MM-DD" date to partition parr life stage
-#' @param rm.bad.GR remove U posterior distributions for strata with Gelman-Rubins test statistic >1.1 from yearly summary
 #' @param strata.op.min minimum number of years data need to have been collected in a stratum to be included in summary
 #' @param den.plot return density plots of MCMC chains
 #' @param trace.plot return trace plots of MCMC chains
@@ -55,7 +54,6 @@ MYTSBE_Cohort <- function(data,
                    iterations = 400000,
                    thin = 100,
                    boot = 5000,
-                   rm.bad.GR = FALSE,
                    model.params = c("p", "U", "etaP1", "etaU1", "sigmaU", "sigmaP")) {
 
 
@@ -256,10 +254,6 @@ MYTSBE_Cohort <- function(data,
 
     parr<-subset(parr, !(parr$strata %in% excl.strata$strata)) # exclude strata under the strata.op.min threshold
 
-    if(rm.bad.GR == TRUE){
-      parr<-subset(parr, !(parr$Parameter %in% nc.gd))
-    }
-
     parrdt<-as.data.table(parr)
 
     parrUdist = numeric(boot); # set aside an empty vector for bootstrap disribution of the mean
@@ -269,6 +263,8 @@ MYTSBE_Cohort <- function(data,
 
     parrUdist<-as.data.frame(parrUdist) #change output to dataframe
     parrUdist$parrUdist<-as.numeric(parrUdist$parrUdist) #change output to numeric
+
+    write.table(parrUdist, file = paste(selectyr,"Parr U distribution.txt"), sep="\t")
 
     #Get descriptive statistics mode, mean, sd, niaveSE or U bootstrap distribution
     parrUsum<-adply(parrUdist, 2, summarise,
@@ -291,10 +287,6 @@ MYTSBE_Cohort <- function(data,
 
     presmolt<-subset(presmolt, !(presmolt$strata %in% excl.strata$strata)) # exclude strata under the strata.op.min threshold
 
-    if(rm.bad.GR == TRUE){
-      presmolt<-subset(presmolt, !(presmolt$Parameter %in% nc.gd))
-    }
-
     presmoltdt<-as.data.table(presmolt)
 
     presmoltUdist = numeric(boot); # set aside an empty vector for bootstrap disribution of the mean
@@ -304,6 +296,8 @@ MYTSBE_Cohort <- function(data,
 
     presmoltUdist<-as.data.frame(presmoltUdist) #change output to dataframe
     presmoltUdist$presmoltUdist<-as.numeric(presmoltUdist$presmoltUdist) #change output to numeric
+
+    write.table(presmoltUdist, file = paste(selectyr,"Presmolt U distribution.txt"), sep="\t")
 
     #Get descriptive statistics mode, mean, sd, niaveSE or U bootstrap distribution
     presmoltUsum<-adply(presmoltUdist, 2, summarise,
@@ -332,16 +326,14 @@ MYTSBE_Cohort <- function(data,
 
     smolt<-subset(smolt, !(smolt$strata %in% excl.strata$strata)) # exclude strata under the strata.op.min threshold
 
-    if(rm.bad.GR == TRUE){
-      smolt<-subset(smolt, !(smolt$Parameter %in% nc.gd))
-    }
-
     smoltdt<-as.data.table(smolt)
 
     smoltUdist = numeric(boot); # set aside an empty vector for bootstrap disribution of the mean
     for (i in 1:boot)
     {smoltUdist[i] <- sum(smoltdt[, value[sample.int(.N, 1, TRUE)], by = strata]) - sum(unique(smoltdt$strata))
     }
+
+    write.table(smoltUdist, file = paste(selectyr,"Smolt U distribution.txt"), sep="\t")
 
     smoltUdist<-as.data.frame(smoltUdist) #change output to dataframe
     smoltUdist$smoltUdist<-as.numeric(smoltUdist$smoltUdist) #change output to numeric
@@ -430,24 +422,6 @@ MYTSBE_Cohort <- function(data,
 
     cohortsummary <- cohortsummary[,c(10:12,1:9)]
 
-    # bind usep.s and usep.p to find what strata were excluded
-    if(rm.bad.GR == TRUE){
-      parr.usep.not.used<-subset(parr1, (parr1$Parameter %in% nc.gd))
-      parr.usep.not.used<-sort(unique(parr.usep.not.used$strata)) + (min(data$strata)-1)
-      parr.usep.not.used<-paste(parr.usep.not.used, collapse= ", ")
-      presmolt.usep.not.used<-subset(presmolt1, (presmolt1$Parameter %in% nc.gd))
-      presmolt.usep.not.used<-sort(unique(presmolt.usep.not.used$strata)) + (min(data$strata)-1)
-      presmolt.usep.not.used<-paste(presmolt.usep.not.used, collapse=", ")
-      smolt.usep.not.used<-subset(smolt1, (smolt1$Parameter %in% nc.gd))
-      smolt.usep.not.used<-sort(unique(smolt.usep.not.used$strata)) + (min(data$strata)-1)
-      smolt.usep.not.used<-paste(smolt.usep.not.used, collapse=", ")
-
-    }  else {
-      parr.usep.not.used <- "none"
-      presmolt.usep.not.used <- "none"
-      smolt.usep.not.used <- "none"
-    }
-
     #read out files
     sink(paste(selectyr, species, trap.name, "Cohort Results.txt"), append=FALSE, split=FALSE)
     writeLines(paste( Sys.Date(),"\n",
@@ -459,17 +433,6 @@ MYTSBE_Cohort <- function(data,
                       "\n",
                       "Strata EXCLUDED from results due to <", strata.op.min, "year(s) of operation ","\n",
                       paste(x.strata, collapse=', '), "\n",
-                      "\n",
-                      "Strata EXCLUDED from results due to GR diagnostics >1.1  ",
-                      "\n",
-                      "PARR (strata ",smolt.strata+(min(data$strata)-1),"-", parr.strata-1+(min(data$strata)-1),");",
-                      parr.usep.not.used,
-                      "\n",
-                      "PRESMOLT (strata > =", parr.strata+(min(data$strata)-1),");",
-                      presmolt.usep.not.used,
-                      "\n",
-                      "SMOLT (strata < = ", smolt.strata-1+(min(data$strata)-1) ,");",
-                      smolt.usep.not.used,
                       "\n"
     )
     )

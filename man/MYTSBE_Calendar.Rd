@@ -8,8 +8,8 @@ MYTSBE_Calendar(data, effort.cor = FALSE, sel.years = currentyear,
   strata.op.min = 1, smolt.juv.date = "06-01", species = "",
   trap.name = "", den.plot = TRUE, trace.plot = FALSE,
   strata.length = s.length, burnin = 1e+05, chains = 3,
-  iterations = 4e+05, thin = 100, boot = 5000, rm.bad.GR = FALSE,
-  model.params = c("p", "U", "etaP1", "etaU1", "sigmaU", "sigmaP"))
+  iterations = 4e+05, thin = 100, boot = 5000, model.params = c("p",
+  "U", "etaP1", "etaU1", "sigmaU", "sigmaP"))
 }
 \arguments{
 \item{data}{capture-mark-recapture data frame}
@@ -41,8 +41,6 @@ MYTSBE_Calendar(data, effort.cor = FALSE, sel.years = currentyear,
 \item{thin}{thin rate for MCMC chains}
 
 \item{boot}{number of boot strap iterations to calculate yearly and life stage abundance estimates}
-
-\item{rm.bad.GR}{remove U posterior distributions for strata with Gelman-Rubins test statistic >1.1 from yearly summary}
 
 \item{model.params}{parameters to be returned from MCMC simulation}
 }
