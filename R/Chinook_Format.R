@@ -230,7 +230,6 @@ Format_Chinook <- function(JTRAP_data,
   trap_complete$m<- ifelse((trap_complete$m > trap_complete$n), trap_complete$n, trap_complete$m)
   trap_complete$yoyu<- ifelse((trap_complete$effort > 0) , trap_complete$yoyu, NA)
   trap_complete$yoym<- ifelse((trap_complete$yoym > trap_complete$yoyn), trap_complete$yoyn, trap_complete$yoym)
-  trap_complete<- trap_complete[-nrow(trap_complete),]
 
   today <- Sys.Date()
 
