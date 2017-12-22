@@ -14,7 +14,7 @@ library(devtools)
 NOTE: To use `devtools`, you may also have to download and install Rtools (although you shouldn't). The latest version on Rtools can be found at
 https://cran.r-project.org/bin/windows/Rtools/
 
-Once `devtools` is successfully installed, use the following to install SCOBI:
+Once `devtools` is successfully installed, use the following to install MYTSBE:
 ```
 devtools::install_github("Boldemeyer/MYTSBE")
 ```
@@ -22,6 +22,6 @@ If you are interested in making contributions to `MYTSBE`, consider getting a Gi
 
 For further information email me or, see:
 
-Oldemeyer, B.N., Copeland, T.S., and B.P. Kennedy. (in review. 2016). A multi-year hierarchical Bayesian mark-recapture model using recurring salmonid behavior to account for sparse or missing data. Canadian Journal of Fisheries and Aquatic Sciences. 
+Oldemeyer, B.N., Copeland, T.S., and B.P. Kennedy. (in review. 2017). A multi-year hierarchical Bayesian mark-recapture model using recurring salmonid behavior to account for sparse or missing data. Canadian Journal of Fisheries and Aquatic Sciences. 
 
 * Will update upon publication
